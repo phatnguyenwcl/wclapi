@@ -1,4 +1,4 @@
-﻿namespace WCLWebAPI.Interfaces
+﻿namespace WCLWebAPI.Server.Interfaces
 {
     public interface IDateTracking
     {

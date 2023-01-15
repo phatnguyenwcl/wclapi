@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using WCLWebAPI.Interfaces;
+using WCLWebAPI.Server.Interfaces;
 
-namespace WCLWebAPI.Entities
+namespace WCLWebAPI.Server.Entities
 {
     [Table("TimeSheets")]
     public class TimeSheet : IDateTracking

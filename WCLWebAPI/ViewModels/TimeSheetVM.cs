@@ -1,12 +1,12 @@
-﻿using WCLWebAPI.Entities;
+﻿using WCLWebAPI.Server.Entities;
 
-namespace WCLWebAPI.ViewModels
+namespace WCLWebAPI.Server.ViewModels
 {
     public class TimeSheetVM
     {
         public int EmployeeID { get; set; }
 
-        public virtual Employee Employee { get; set; }
+        public Employee Employee { get; set; }
 
         public DateTime StartWorking { get; set; }
 

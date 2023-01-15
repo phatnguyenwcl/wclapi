@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using WCLWebAPI.Enums;
-using WCLWebAPI.Interfaces;
+using WCLWebAPI.Server.Enums;
+using WCLWebAPI.Server.Interfaces;
 
-namespace WCLWebAPI.Entities
+namespace WCLWebAPI.Server.Entities
 {
     [Table("Employees")]
     public class Employee : IDateTracking

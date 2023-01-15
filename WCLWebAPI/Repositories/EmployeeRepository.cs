@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using WCLWebAPI.EF;
-using WCLWebAPI.Entities;
-using WCLWebAPI.Interfaces;
-using WCLWebAPI.ViewModels;
+using WCLWebAPI.Server.EF;
+using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.Interfaces;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Repositories
+namespace WCLWebAPI.Server.Repositories
 {
     public class EmployeeRepository : IEmployee
     {
@@ -41,42 +41,43 @@ namespace WCLWebAPI.Repositories
             return mapRes;
         }
 
-        public void AddEmployee(EmployeeVM employee)
+        public EmployeeVM AddEmployee(EmployeeVM employee)
         {
             var mapRes = _mapper.Map<EmployeeVM, Employee>(employee);
 
             _context.Employees.Add(mapRes);
-
-            _context.SaveChanges();
+            
+            return employee;
         }
 
-        public void UpdateEmployee(EmployeeVM employee)
+        public EmployeeVM UpdateEmployee(EmployeeVM employee)
         {
             var mapRes = _mapper.Map<EmployeeVM, Employee>(employee);
 
-            _context.SaveChanges();
+            _context.Employees.Update(mapRes);
+
+            return employee;
         }
 
-        public EmployeeVM DeleteEmployee(int id)
+        public bool DeleteEmployee(int id)
         {
-            if (id == 0) return new EmployeeVM();
-
             var query = _context.Employees.FirstOrDefault(x => x.ID == id);
 
-            if (query == null) return new EmployeeVM();
+            if (query is null) return false;
 
             _context.Employees.Remove(query);
 
-            _context.SaveChanges();
-
-            var mapRes = _mapper.Map<Employee, EmployeeVM>(query);
-
-            return mapRes;
+            return true;
         }
 
         public bool CheckEmployee(int id)
         {
             return _context.Employees.Any(x => x.ID == id);
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using WCLWebAPI.Enums;
+﻿using WCLWebAPI.Server.Enums;
 
-namespace WCLWebAPI.ViewModels
+namespace WCLWebAPI.Server.ViewModels
 {
     public class EmployeeVM
     {

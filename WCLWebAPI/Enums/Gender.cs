@@ -1,4 +1,4 @@
-﻿namespace WCLWebAPI.Enums
+﻿namespace WCLWebAPI.Server.Enums
 {
     public enum Gender
     {

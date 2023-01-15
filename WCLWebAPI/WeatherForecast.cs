@@ -1,4 +1,4 @@
-namespace WCLWebAPI
+namespace WCLWebAPI.Server
 {
     public class WeatherForecast
     {

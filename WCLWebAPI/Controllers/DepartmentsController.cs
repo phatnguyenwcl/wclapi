@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WCLWebAPI.Interfaces;
-using WCLWebAPI.ViewModels;
+using WCLWebAPI.Server.Interfaces;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Controllers
+namespace WCLWebAPI.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -31,7 +31,9 @@ namespace WCLWebAPI.Controllers
         {
             if (departmentVM == null && string.IsNullOrEmpty(departmentVM.Name)) return NotFound();
             _department.AddDepartment(departmentVM);
-            return Ok();
+            _department.Save();
+            var resultVm = _department.GetDepartmentFirst();
+            return Ok(resultVm);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using WCLWebAPI.EF;
-using WCLWebAPI.Entities;
-using WCLWebAPI.Interfaces;
-using WCLWebAPI.ViewModels;
+using WCLWebAPI.Server.EF;
+using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.Interfaces;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Repositories
+namespace WCLWebAPI.Server.Repositories
 {
     public class TimeSheetRepository : ITimeSheet
     {
@@ -41,42 +41,43 @@ namespace WCLWebAPI.Repositories
             return mapRes;
         }
 
-        public void AddTimeSheet(TimeSheetVM timeSheet)
+        public TimeSheetVM AddTimeSheet(TimeSheetVM timeSheet)
         {
             var mapRes = _mapper.Map<TimeSheetVM, TimeSheet>(timeSheet);
 
             _context.TimeSheets.Add(mapRes);
 
-            _context.SaveChanges();
+            return timeSheet;
         }
 
-        public void UpdateTimeSheet(TimeSheetVM timeSheet)
+        public TimeSheetVM UpdateTimeSheet(TimeSheetVM timeSheet)
         {
             var mapRes = _mapper.Map<TimeSheetVM, TimeSheet>(timeSheet);
 
-            _context.SaveChanges();
+            _context.TimeSheets.Update(mapRes);
+
+            return timeSheet;
         }
 
-        public TimeSheetVM DeleteTimeSheet(int id)
+        public bool DeleteTimeSheet(int id)
         {
-            if (id == 0) return new TimeSheetVM();
-
             var query = _context.TimeSheets.FirstOrDefault(x => x.ID == id);
 
-            if (query == null) return new TimeSheetVM();
+            if (query is null) return false;
 
             _context.TimeSheets.Remove(query);
 
-            _context.SaveChanges();
-
-            var mapRes = _mapper.Map<TimeSheet, TimeSheetVM>(query);
-
-            return mapRes;
+            return true;
         }
 
         public bool CheckTimeSheet(int id)
         {
             return _context.TimeSheets.Any(x => x.ID == id);
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

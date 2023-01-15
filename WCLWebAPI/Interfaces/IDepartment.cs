@@ -1,15 +1,17 @@
-﻿using WCLWebAPI.Entities;
-using WCLWebAPI.ViewModels;
+﻿using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Interfaces
+namespace WCLWebAPI.Server.Interfaces
 {
     public interface IDepartment
     {
         IEnumerable<DepartmentVM> GetDepartments();
         DepartmentVM GetDepartmentDetails(int id);
-        void AddDepartment(DepartmentVM department);
-        void UpdateDepartment(DepartmentVM department);
-        DepartmentVM DeleteDepartment(int id);
+        DepartmentVM GetDepartmentFirst();
+        DepartmentVM AddDepartment(DepartmentVM department);
+        DepartmentVM UpdateDepartment(DepartmentVM department);
+        bool DeleteDepartment(int id);
         bool CheckDepartment(int id);
+        void Save();
     }
 }

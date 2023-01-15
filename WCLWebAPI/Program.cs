@@ -1,9 +1,9 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WCLWebAPI.AutoMapper;
-using WCLWebAPI.EF;
-using WCLWebAPI.Interfaces;
-using WCLWebAPI.Repositories;
+using WCLWebAPI.Server.AutoMapper;
+using WCLWebAPI.Server.EF;
+using WCLWebAPI.Server.Interfaces;
+using WCLWebAPI.Server.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,8 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAn
             .AllowAnyMethod()
             .AllowAnyHeader()));
 
+builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,11 +31,11 @@ builder.Services.AddTransient<ITimeSheet, TimeSheetRepository>();
 
 
 //Setup automapper
-var mapperConfig = new MapperConfiguration(mc => {
-    mc.AddProfile(new MappingProfile());
-});
-IMapper mapper = mapperConfig.CreateMapper();
-builder.Services.AddSingleton(mapper);
+//var mapperConfig = new MapperConfiguration(mc => {
+//    mc.AddProfile(new MappingProfile());
+//});
+//IMapper mapper = mapperConfig.CreateMapper();
+//builder.Services.AddSingleton(mapper);
 
 
 var app = builder.Build();

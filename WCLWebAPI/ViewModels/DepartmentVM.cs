@@ -1,12 +1,13 @@
-﻿using WCLWebAPI.Entities;
+﻿using WCLWebAPI.Server.Entities;
 
-namespace WCLWebAPI.ViewModels
+namespace WCLWebAPI.Server.ViewModels
 {
     public class DepartmentVM
     {
+        public int ID { get; set; }
         public string Name { get; set; }
 
         //public int EmployeeID { get; set; }
-        //public virtual ICollection<Employee> Employees { set; get; }
+        //public ICollection<Employee> Employees { set; get; }
     }
 }

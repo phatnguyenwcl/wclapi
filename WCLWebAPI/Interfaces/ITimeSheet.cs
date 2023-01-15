@@ -1,15 +1,16 @@
-﻿using WCLWebAPI.Entities;
-using WCLWebAPI.ViewModels;
+﻿using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Interfaces
+namespace WCLWebAPI.Server.Interfaces
 {
     public interface ITimeSheet
     {
         IEnumerable<TimeSheetVM> GetTimeSheets();
         TimeSheetVM GetTimeSheetDetails(int id);
-        void AddTimeSheet(TimeSheetVM employee);
-        void UpdateTimeSheet(TimeSheetVM employee);
-        TimeSheetVM DeleteTimeSheet(int id);
+        TimeSheetVM AddTimeSheet(TimeSheetVM employee);
+        TimeSheetVM UpdateTimeSheet(TimeSheetVM employee);
+        bool DeleteTimeSheet(int id);
         bool CheckTimeSheet(int id);
+        void Save();
     }
 }

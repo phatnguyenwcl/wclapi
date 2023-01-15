@@ -1,15 +1,16 @@
-﻿using WCLWebAPI.Entities;
-using WCLWebAPI.ViewModels;
+﻿using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Interfaces
+namespace WCLWebAPI.Server.Interfaces
 {
     public interface IEmployee
     {
         IEnumerable<EmployeeVM> GetEmployees();
         EmployeeVM GetEmployeeDetails(int id);
-        void AddEmployee(EmployeeVM employee);
-        void UpdateEmployee(EmployeeVM employee);
-        EmployeeVM DeleteEmployee(int id);
+        EmployeeVM AddEmployee(EmployeeVM employee);
+        EmployeeVM UpdateEmployee(EmployeeVM employee);
+        bool DeleteEmployee(int id);
         bool CheckEmployee(int id);
+        void Save();
     }
 }

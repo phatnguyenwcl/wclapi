@@ -12,8 +12,8 @@ function addItem() {
     const addNameTextbox = document.getElementById('add-name');
 
     const item = {
-        isComplete: false,
-        name: addNameTextbox.value.trim()
+        //isComplete: false,
+        Name: addNameTextbox.value.trim()
     };
 
     fetch(uri, {

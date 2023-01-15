@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using WCLWebAPI.Entities;
-using WCLWebAPI.Interfaces;
+using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.Interfaces;
 
-namespace WCLWebAPI.EF
+namespace WCLWebAPI.Server.EF
 {
     public class WCLManagementDbContext : DbContext
     {

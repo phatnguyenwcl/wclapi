@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using WCLWebAPI.EF;
-using WCLWebAPI.Entities;
-using WCLWebAPI.Interfaces;
-using WCLWebAPI.ViewModels;
+using WCLWebAPI.Server.EF;
+using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.Interfaces;
+using WCLWebAPI.Server.ViewModels;
 
-namespace WCLWebAPI.Repositories
+namespace WCLWebAPI.Server.Repositories
 {
     public class DepartmentRepository : IDepartment
     {
@@ -41,42 +41,48 @@ namespace WCLWebAPI.Repositories
             return mapRes;
         }
 
-        public void AddDepartment(DepartmentVM department)
+        public DepartmentVM AddDepartment(DepartmentVM department)
         {
             var mapRes = _mapper.Map<DepartmentVM, Department>(department);
 
             _context.Departments.Add(mapRes);
 
-            _context.SaveChanges();
+            return department;
         }
 
-        public void UpdateDepartment(DepartmentVM department)
+        public DepartmentVM UpdateDepartment(DepartmentVM department)
         {
             var mapRes = _mapper.Map<DepartmentVM, Department>(department);
 
-            _context.SaveChanges();
+            _context.Departments.Update(mapRes);
+
+            return department;
         }
 
-        public DepartmentVM DeleteDepartment(int id)
-        {
-            if (id == 0) return new DepartmentVM();
-            
+        public bool DeleteDepartment(int id)
+        {            
             var query = _context.Departments.FirstOrDefault(x => x.ID == id);
-            
-            if (query == null) return new DepartmentVM();
+
+            if (query is null) return false;
 
             _context.Departments.Remove(query);
 
-            _context.SaveChanges();
-
-            var mapRes = _mapper.Map<Department, DepartmentVM>(query);
-
-            return mapRes;
+            return true;
         }
 
         public bool CheckDepartment(int id) 
         {
             return _context.Departments.Any(x => x.ID == id);
+        }
+
+        public DepartmentVM GetDepartmentFirst()
+        {
+            return _mapper.ProjectTo<DepartmentVM>(_context.Departments.OrderByDescending(x => x.DateCreated)).FirstOrDefault();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }
