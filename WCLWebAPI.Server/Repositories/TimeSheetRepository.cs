@@ -6,7 +6,7 @@ using WCLWebAPI.Server.ViewModels;
 
 namespace WCLWebAPI.Server.Repositories
 {
-    public class TimeSheetRepository : ITimeSheetService
+    public class TimeSheetRepository : ITimeSheet
     {
         private WCLManagementDbContext _context;
         private readonly IMapper _mapper;

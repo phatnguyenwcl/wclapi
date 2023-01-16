@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Reflection.Emit;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
 
 namespace WCLWebAPI.Server.EF
 {
-    public class WCLManagementDbContext : IdentityDbContext<AppUser, AppRole, Guid>
+    public class WCLManagementDbContext : DbContext
     {
         public WCLManagementDbContext()
         {
@@ -16,17 +13,6 @@ namespace WCLWebAPI.Server.EF
 
         public WCLManagementDbContext(DbContextOptions<WCLManagementDbContext> options) : base(options)
         {
-        }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            //Configure using Fluent API
-            builder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
-            builder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
-            builder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
-
-            builder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
-            builder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
         }
 
         public override int SaveChanges()
@@ -53,7 +39,5 @@ namespace WCLWebAPI.Server.EF
         public DbSet<Employee> Employees { get; set; }
 
         public DbSet<TimeSheet> TimeSheets { get; set; }
-
-        public DbSet<AppConfig> AppConfigs { get; set; }
     }
 }

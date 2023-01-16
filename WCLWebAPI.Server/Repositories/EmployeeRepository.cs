@@ -6,7 +6,7 @@ using WCLWebAPI.Server.ViewModels;
 
 namespace WCLWebAPI.Server.Repositories
 {
-    public class EmployeeRepository : IEmployeeService
+    public class EmployeeRepository : IEmployee
     {
         private WCLManagementDbContext _context;
         private readonly IMapper _mapper;

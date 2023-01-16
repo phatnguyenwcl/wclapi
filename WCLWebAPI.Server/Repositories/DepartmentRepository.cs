@@ -84,10 +84,5 @@ namespace WCLWebAPI.Server.Repositories
         {
             _context.SaveChanges();
         }
-
-        public Department GetById(int id)
-        {
-            return _context.Departments.FirstOrDefault(x => x.ID == id);
-        }
     }
 }

@@ -35,33 +35,5 @@ namespace WCLWebAPI.Server.Controllers
             var resultVm = _department.GetDepartmentFirst();
             return Ok(resultVm);
         }
-
-        [HttpPut]
-        public IActionResult UpdateDepartment(DepartmentVM departmentVM)
-        {
-            if (departmentVM is null) return NotFound();
-            
-            var query = _department.GetById(departmentVM.ID);
-
-            if (query is null) return NotFound();
-
-            query.Name = departmentVM.Name;
-
-            _department.Save();
-
-            return Ok(query);
-        }
-
-        [HttpDelete]
-        public IActionResult DeleteDepartment(int departmentID)
-        {
-            if (departmentID == 0)
-            {
-                return NotFound();
-            }
-            _department.DeleteDepartment(departmentID);
-            _department.Save();
-            return Ok();
-        }
     }
 }
