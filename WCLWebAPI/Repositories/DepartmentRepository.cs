@@ -6,7 +6,7 @@ using WCLWebAPI.Server.ViewModels;
 
 namespace WCLWebAPI.Server.Repositories
 {
-    public class DepartmentRepository : IDepartment
+    public class DepartmentRepository : IDepartmentService
     {
         private readonly WCLManagementDbContext _context;
         private readonly IMapper _mapper;

@@ -98,6 +98,7 @@ namespace WCLWebAPI.Server.Repositories
 
         public async Task<ApiResult<bool>> RegisterAsync(RegisterRequest request)
         {
+            List<string> messages = new List<string>();
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user != null)
             {
@@ -107,7 +108,6 @@ namespace WCLWebAPI.Server.Repositories
             {
                 return new ApiErrorResult<bool>("Email already exists");
             }
-
             user = new AppUser()
             {
                 Dob = request.Dob,
@@ -122,6 +122,15 @@ namespace WCLWebAPI.Server.Repositories
             {
                 return new ApiSuccessResult<bool>();
             }
+
+            if (result.Errors.Any())
+            {
+                result.Errors.ToList().ForEach(e => {
+                    messages.Add(e.Description);
+                });
+                return new ApiErrorResult<bool>(messages.ToArray());
+            }
+            
             return new ApiErrorResult<bool>("Registration failed");
         }
 

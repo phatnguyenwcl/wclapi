@@ -12,6 +12,7 @@ namespace WCLWebAPI.Server.AutoMapper
             CreateMap<Employee, EmployeeVM>().ReverseMap();
             CreateMap<TimeSheet, TimeSheetVM>().ReverseMap();
             CreateMap<AppRole, RoleVM>().ReverseMap();
+            CreateMap<AppUser, UserVM>().ReverseMap();
         }
     }
 }

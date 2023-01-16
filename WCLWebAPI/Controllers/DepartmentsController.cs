@@ -10,10 +10,10 @@ namespace WCLWebAPI.Server.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IDepartment _department;
+        private readonly IDepartmentService _department;
         private readonly IMapper _mapper;
 
-        public DepartmentsController(IDepartment department, IMapper mapper)
+        public DepartmentsController(IDepartmentService department, IMapper mapper)
         {
             _department = department;
             _mapper = mapper;
