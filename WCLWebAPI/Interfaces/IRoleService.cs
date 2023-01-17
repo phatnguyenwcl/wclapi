@@ -1,4 +1,5 @@
-﻿using WCLWebAPI.Server.ViewModels;
+﻿
+using WCLWebAPI.Server.ViewModels.System.Roles;
 
 namespace WCLWebAPI.Server.Interfaces
 {

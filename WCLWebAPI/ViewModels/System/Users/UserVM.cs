@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WCLWebAPI.Server.ViewModels
+namespace WCLWebAPI.Server.ViewModels.System.Users
 {
     public class UserVM
     {

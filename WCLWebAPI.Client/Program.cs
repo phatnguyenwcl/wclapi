@@ -1,12 +1,13 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using WCLWebAPI.Server.Interfaces;
-using WCLWebAPI.Server.Repositories;
+using WCLWebAPI.Client.IServicesInterface;
+using WCLWebAPI.Client.Services;
 using WCLWebAPI.Server.ViewModels.System.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -30,8 +31,9 @@ builder.Services.AddSession(options =>
 //builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddTransient<IUserApiClientService, UserApiClientRepository>();
-builder.Services.AddTransient<ILanguageApiClientService, LanguageApiClientRepository>();
+builder.Services.AddTransient<IUserApiClientServiceInterface, UserApiClientService>();
+builder.Services.AddTransient<IRoleApiClientServiceInterface, RoleApiClientService>();
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -53,8 +55,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    name: "default", 
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

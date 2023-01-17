@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WCLWebAPI.Server.Interfaces;
-using WCLWebAPI.Server.ViewModels;
+using WCLWebAPI.Server.ViewModels.System.Roles;
+using WCLWebAPI.Server.ViewModels.System.Users;
 
 namespace WCLWebAPI.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         public readonly IUserService _userService;
@@ -32,7 +34,7 @@ namespace WCLWebAPI.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -74,6 +76,14 @@ namespace WCLWebAPI.Server.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
+        }
+
+        //http://localhost/api/users/paging?pageIndex=1&pageSize=10&keyword=
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
+        {
+            var users = await _userService.GetUsersPagingAsync(request);
+            return Ok(users);
         }
 
         [HttpGet("{id}")]

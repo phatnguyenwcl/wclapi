@@ -1,11 +1,14 @@
 ﻿using WCLWebAPI.Server.Common;
-using WCLWebAPI.Server.ViewModels;
+using WCLWebAPI.Server.ViewModels.System.Users;
+using WCLWebAPI.Server.ViewModels.System.Roles;
 
-namespace WCLWebAPI.Server.Interfaces
+namespace WCLWebAPI.Client.IServicesInterface
 {
-    public interface IUserApiClientService
+    public interface IUserApiClientServiceInterface
     {
         Task<ApiResult<string>> AuthenticateAsync(LoginRequest request);
+
+        Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingsAsync(GetUserPagingRequest request);
 
         Task<ApiResult<bool>> RegisterUserAsync(RegisterRequest registerRequest);
 

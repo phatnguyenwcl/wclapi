@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
-using WCLWebAPI.Server.ViewModels;
+using WCLWebAPI.Server.ViewModels.System.Roles;
 
 namespace WCLWebAPI.Server.Repositories
 {

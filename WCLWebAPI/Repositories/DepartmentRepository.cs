@@ -41,22 +41,24 @@ namespace WCLWebAPI.Server.Repositories
             return mapRes;
         }
 
-        public DepartmentVM AddDepartment(DepartmentVM department)
+        public void AddDepartment(string department)
         {
-            var mapRes = _mapper.Map<DepartmentVM, Department>(department);
-
-            _context.Departments.Add(mapRes);
-
-            return department;
+            var departmentModel = new Department();
+            departmentModel.Name = department;
+            _context.Departments.Add(departmentModel);
+            _context.SaveChanges();
         }
 
-        public DepartmentVM UpdateDepartment(DepartmentVM department)
+        public void UpdateDepartment(DepartmentVM department)
         {
-            var mapRes = _mapper.Map<DepartmentVM, Department>(department);
-
-            _context.Departments.Update(mapRes);
-
-            return department;
+            var query = _context.Departments.FirstOrDefault(x => x.ID == department.ID);
+            if (query != null)
+            {
+                query.Name = department.Name;
+                _context.Departments.Update(query);
+                
+                _context.SaveChanges();
+            }
         }
 
         public bool DeleteDepartment(int id)
@@ -66,6 +68,8 @@ namespace WCLWebAPI.Server.Repositories
             if (query is null) return false;
 
             _context.Departments.Remove(query);
+
+            _context.SaveChanges();
 
             return true;
         }

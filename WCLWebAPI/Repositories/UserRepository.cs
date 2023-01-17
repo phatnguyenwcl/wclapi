@@ -9,7 +9,8 @@ using WCLWebAPI.Server.Common;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
-using WCLWebAPI.Server.ViewModels;
+using WCLWebAPI.Server.ViewModels.System.Roles;
+using WCLWebAPI.Server.ViewModels.System.Users;
 
 namespace WCLWebAPI.Server.Repositories
 {
@@ -43,9 +44,9 @@ namespace WCLWebAPI.Server.Repositories
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.GivenName,user.FirstName),
-                new Claim(ClaimTypes.Role, string.Join(";",roles)),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Role, string.Join(";", roles)),
                 new Claim(ClaimTypes.Name, request.UserName)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
@@ -132,6 +133,41 @@ namespace WCLWebAPI.Server.Repositories
             }
             
             return new ApiErrorResult<bool>("Registration failed");
+        }
+
+        public async Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingAsync(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword)
+                 || x.PhoneNumber.Contains(request.Keyword));
+            }
+
+            //3. Paging
+            int totalRow = await query.CountAsync();
+
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserVM()
+                {
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    UserName = x.UserName,
+                    FirstName = x.FirstName,
+                    Id = x.Id,
+                    LastName = x.LastName
+                }).ToListAsync();
+
+            //4. Select and projection
+            var pagedResult = new PagedResult<UserVM>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = data
+            };
+            return new ApiSuccessResult<PagedResult<UserVM>>(pagedResult);
         }
 
         public async Task<ApiResult<bool>> RoleAssignAsync(Guid id, RoleAssignRequest request)

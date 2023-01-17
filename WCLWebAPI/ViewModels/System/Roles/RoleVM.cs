@@ -1,4 +1,4 @@
-﻿namespace WCLWebAPI.Server.ViewModels
+﻿namespace WCLWebAPI.Server.ViewModels.System.Roles
 {
     public class RoleVM
     {

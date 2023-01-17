@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WCLWebAPI.Server.Interfaces;
 
@@ -6,6 +6,7 @@ namespace WCLWebAPI.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;

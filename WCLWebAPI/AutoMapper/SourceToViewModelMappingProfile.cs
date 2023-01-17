@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.ViewModels;
+using WCLWebAPI.Server.ViewModels.System.Roles;
+using WCLWebAPI.Server.ViewModels.System.Users;
 
 namespace WCLWebAPI.Server.AutoMapper
 {

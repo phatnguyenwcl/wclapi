@@ -8,8 +8,8 @@ namespace WCLWebAPI.Server.Interfaces
         IEnumerable<DepartmentVM> GetDepartments();
         DepartmentVM GetDepartmentDetails(int id);
         DepartmentVM GetDepartmentFirst();
-        DepartmentVM AddDepartment(DepartmentVM department);
-        DepartmentVM UpdateDepartment(DepartmentVM department);
+        void AddDepartment(string name);
+        void UpdateDepartment(DepartmentVM department);
         bool DeleteDepartment(int id);
         bool CheckDepartment(int id);
         void Save();

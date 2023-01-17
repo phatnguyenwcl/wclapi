@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WCLWebAPI.Server.Interfaces;
@@ -19,48 +20,42 @@ namespace WCLWebAPI.Server.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("departments")]
         public IActionResult GetDepartments()
         {
             var department = _department.GetDepartments().ToList();
             return Ok(department);
         }
 
-        [HttpPost]
-        public IActionResult CreateDepartment([FromBody] DepartmentVM departmentVM)
+        [HttpPost("{name}")]
+        public IActionResult CreateDepartment(string name)
         {
-            if (departmentVM == null && string.IsNullOrEmpty(departmentVM.Name)) return NotFound();
-            _department.AddDepartment(departmentVM);
-            _department.Save();
-            var resultVm = _department.GetDepartmentFirst();
-            return Ok(resultVm);
+            if (string.IsNullOrEmpty(name)) return BadRequest();
+            _department.AddDepartment(name);
+            return Ok();
         }
 
-        [HttpPut]
-        public IActionResult UpdateDepartment(DepartmentVM departmentVM)
+        [HttpPut("{ID}/department")]
+        public IActionResult UpdateDepartment(int ID, [FromBody] DepartmentVM departmentVM)
         {
-            if (departmentVM is null) return NotFound();
+            if (ID == 0) return BadRequest();
             
-            var query = _department.GetById(departmentVM.ID);
+            if (departmentVM is null) return BadRequest();
 
-            if (query is null) return NotFound();
+           _department.UpdateDepartment(departmentVM);
 
-            query.Name = departmentVM.Name;
-
-            _department.Save();
-
-            return Ok(query);
+            return Ok(departmentVM);
         }
 
-        [HttpDelete]
+        [HttpDelete("{departmentID}")]
         public IActionResult DeleteDepartment(int departmentID)
         {
             if (departmentID == 0)
             {
-                return NotFound();
+                return BadRequest();
             }
             _department.DeleteDepartment(departmentID);
-            _department.Save();
+            
             return Ok();
         }
     }

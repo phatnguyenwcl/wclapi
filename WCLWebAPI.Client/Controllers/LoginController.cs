@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WCLWebAPI.Server.Interfaces;
+using WCLWebAPI.Client.IServicesInterface;
 using WCLWebAPI.Server.ViewModels;
+using WCLWebAPI.Server.ViewModels.System.Users;
 
 namespace WCLWebAPI.Client.Controllers
 {
+    [Authorize]
     public class LoginController : Controller
     {
-        private readonly IUserApiClientService _userApiClientService;
+        private readonly IUserApiClientServiceInterface _userApiClientService;
         private readonly IConfiguration _configuration;
 
-        public LoginController(IUserApiClientService userApiClientService, IConfiguration configuration)
+        public LoginController(IUserApiClientServiceInterface userApiClientService, IConfiguration configuration)
         {
             _userApiClientService = userApiClientService;
             _configuration = configuration;
@@ -53,7 +56,7 @@ namespace WCLWebAPI.Client.Controllers
                 IsPersistent = false
             };
 
-            HttpContext.Session.SetString("DefaultLanguageId", _configuration["DefaultLanguageId"]);
+            //HttpContext.Session.SetString("DefaultLanguageId", _configuration["DefaultLanguageId"]);
             HttpContext.Session.SetString("Token", result.ResultObj);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
 

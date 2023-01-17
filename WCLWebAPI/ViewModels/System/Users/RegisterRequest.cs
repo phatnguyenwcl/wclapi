@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WCLWebAPI.Server.ViewModels
+namespace WCLWebAPI.Server.ViewModels.System.Users
 {
-    public class UserUpdateRequest
+    public class RegisterRequest
     {
-        public Guid Id { get; set; }
-
         [Display(Name = "FirstName")]
         public string FirstName { get; set; }
 
@@ -21,5 +19,16 @@ namespace WCLWebAPI.Server.ViewModels
 
         [Display(Name = "Phone")]
         public string PhoneNumber { get; set; }
+
+        [Display(Name = "Username")]
+        public string UserName { get; set; }
+
+        [Display(Name = "Password")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Display(Name = "Confirm Password")]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }
     }
 }
