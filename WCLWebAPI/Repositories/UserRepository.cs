@@ -193,7 +193,7 @@ namespace WCLWebAPI.Server.Repositories
             var addedRoles = request.Roles.Where(x => x.Selected).Select(x => x.Name).ToList();
             foreach (var roleName in addedRoles)
             {
-                if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                if (await _userManager.IsInRoleAsync(user, roleName) == false)//role chua ton tai
                 {
                     await _userManager.AddToRoleAsync(user, roleName);
                 }
