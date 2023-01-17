@@ -10,6 +10,8 @@ namespace WCLWebAPI.Client.IServicesInterface
 
         Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingsAsync(GetUserPagingRequest request);
 
+        Task<ApiResult<List<UserVM>>> GetUsersAsync();
+
         Task<ApiResult<bool>> RegisterUserAsync(RegisterRequest registerRequest);
 
         Task<ApiResult<bool>> UpdateUserAsync(Guid id, UserUpdateRequest request);

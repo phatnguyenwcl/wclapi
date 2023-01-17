@@ -18,6 +18,7 @@ namespace WCLWebAPI.Client.Controllers
         public IActionResult Index()
         {
             var user = User.Identity.Name;
+            //var ss = HttpContext.Session.GetString("Token");
             return View();
         }
 

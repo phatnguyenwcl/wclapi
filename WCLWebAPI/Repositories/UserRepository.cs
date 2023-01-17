@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -138,7 +139,9 @@ namespace WCLWebAPI.Server.Repositories
         public async Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingAsync(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
-            if (!string.IsNullOrEmpty(request.Keyword))
+            var emptyString = "\"\"";
+            
+            if (request.Keyword != "null" && request.Keyword != emptyString && !string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.UserName.Contains(request.Keyword)
                  || x.PhoneNumber.Contains(request.Keyword));
@@ -220,10 +223,17 @@ namespace WCLWebAPI.Server.Repositories
             return new ApiErrorResult<bool>("Update failed");
         }
 
-        public async Task<ApiResult<int>> SaveAsync()
+        public async Task<ApiResult<List<UserVM>>> GetUsersAsync()
         {
-           var rs = await _context.SaveChangesAsync();
-           return new ApiSuccessResult<int>(rs);
+            var result = new List<UserVM>();
+
+            var query = _userManager.Users;
+            if (query.Any())
+            {
+                result = await _mapper.ProjectTo<UserVM>(query).ToListAsync();
+            }
+
+            return new ApiSuccessResult<List<UserVM>>(result);
         }
     }
 }

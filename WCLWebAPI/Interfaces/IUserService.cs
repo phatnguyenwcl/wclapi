@@ -12,6 +12,8 @@ namespace WCLWebAPI.Server.Interfaces
 
         Task<ApiResult<bool>> UpdateAsync(Guid id, UserUpdateRequest request);
 
+        Task<ApiResult<List<UserVM>>> GetUsersAsync();
+
         Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingAsync(GetUserPagingRequest request);
 
         Task<ApiResult<UserVM>> GetByIdAsync(Guid id);
@@ -19,7 +21,5 @@ namespace WCLWebAPI.Server.Interfaces
         Task<ApiResult<bool>> DeleteAsync(Guid id);
 
         Task<ApiResult<bool>> RoleAssignAsync(Guid id, RoleAssignRequest request);
-
-        Task<ApiResult<int>> SaveAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 using WCLWebAPI.Server.Interfaces;
 using WCLWebAPI.Server.ViewModels.System.Roles;
 using WCLWebAPI.Server.ViewModels.System.Users;
@@ -83,6 +84,13 @@ namespace WCLWebAPI.Server.Controllers
         public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
         {
             var users = await _userService.GetUsersPagingAsync(request);
+            return Ok(users);
+        }
+
+        [HttpGet("getUsers")]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var users = await _userService.GetUsersAsync();
             return Ok(users);
         }
 

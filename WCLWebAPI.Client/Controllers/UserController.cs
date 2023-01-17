@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WCLWebAPI.Client.Controllers
 {
-    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserApiClientServiceInterface _userApiClient;
@@ -23,21 +22,14 @@ namespace WCLWebAPI.Client.Controllers
             _roleApiClient = roleApiClientServiceInterface;
         }
 
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index()
         {
-            var session = HttpContext.Session.GetString("Token");
-            var request = new GetUserPagingRequest()
-            {
-                Keyword = keyword,
-                PageIndex = pageIndex,
-                PageSize = pageSize
-            };
-            var data = await _userApiClient.GetUsersPagingsAsync(request);
-            ViewBag.Keyword = keyword;
-            if (TempData["result"] != null)
-            {
-                ViewBag.SuccessMsg = TempData["result"];
-            }
+            
+            var data = await _userApiClient.GetUsersAsync();
+            //if (TempData["result"] != null)
+            //{
+            //    ViewBag.SuccessMsg = TempData["result"];
+            //}
             return View(data.ResultObj);
         }
 

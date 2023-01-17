@@ -13,7 +13,6 @@ using WCLWebAPI.Server.ViewModels.System.Users;
 
 namespace WCLWebAPI.Client.Controllers
 {
-    [Authorize]
     public class LoginController : Controller
     {
         private readonly IUserApiClientServiceInterface _userApiClientService;

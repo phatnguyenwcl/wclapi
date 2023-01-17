@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Azure;
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using WCLWebAPI.Client.IServicesInterface;
@@ -67,15 +71,30 @@ namespace WCLWebAPI.Client.Services
 
         public async Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingsAsync(GetUserPagingRequest request)
         {
+
             var client = _httpClientFactory.CreateClient();
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
 
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
             var response = await client.GetAsync($"/api/users/paging?pageIndex=" +
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
             var body = await response.Content.ReadAsStringAsync();
             var users = JsonConvert.DeserializeObject<ApiSuccessResult<PagedResult<UserVM>>>(body);
+            return users;
+        }
+
+        public async Task<ApiResult<List<UserVM>>> GetUsersAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var response = await client.GetAsync($"/api/users/getUsers");
+            var body = await response.Content.ReadAsStringAsync();
+            var users = JsonConvert.DeserializeObject<ApiSuccessResult<List<UserVM>>>(body);
             return users;
         }
 
