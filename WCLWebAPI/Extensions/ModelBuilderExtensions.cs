@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
@@ -35,6 +36,24 @@ namespace WCLWebAPI.Server.Extensions
 
             //init AppUser
             var hash = new PasswordHasher<AppUser>();
+            var user_phat = new AppUser()
+            {
+                Dob = new DateTime(1994, 05, 10),
+                Email = "nhkphat@gmail.com",
+                FirstName = "Phat",
+                LastName = "Nguyen",
+                UserName = "nhkphat",
+                PhoneNumber = "0972532751"
+            };
+            var user_Vinh = new AppUser()
+            {
+                Dob = new DateTime(1990, 02, 15),
+                Email = "vinhnx@gmail.com",
+                FirstName = "Vinh",
+                LastName = "Nguyen",
+                UserName = "vinhnx",
+                PhoneNumber = "0935532758"
+            };
             modelBuilder.Entity<AppUser>().HasData(
                     new AppUser
                     {
@@ -44,7 +63,7 @@ namespace WCLWebAPI.Server.Extensions
                         Email = "nhkphat@gmail.com",
                         NormalizedEmail = "NHKPHAT@GMAIL.COM",
                         EmailConfirmed = true,
-                        PasswordHash = hash.HashPassword(null, "Nhkph@t123"),
+                        PasswordHash = hash.HashPassword(user_phat, "Nhkph@t123"),
                         PhoneNumber = "0972532751",
                         PhoneNumberConfirmed = false,
                         TwoFactorEnabled = false,
@@ -63,7 +82,7 @@ namespace WCLWebAPI.Server.Extensions
                         Email = "vinhnx@gmail.com",
                         NormalizedEmail = "VINHNX@GMAIL.COM",
                         EmailConfirmed = true,
-                        PasswordHash = hash.HashPassword(null, "Vinhnx@t123"),
+                        PasswordHash = hash.HashPassword(user_Vinh, "Vinhnx@t123"),
                         PhoneNumber = "0935532758",
                         PhoneNumberConfirmed = false,
                         TwoFactorEnabled = false,

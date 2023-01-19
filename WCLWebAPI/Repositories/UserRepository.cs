@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WCLWebAPI.Server.Common;
+using WCLWebAPI.Server.Constants;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
@@ -35,12 +36,12 @@ namespace WCLWebAPI.Server.Repositories
         public async Task<ApiResult<string>> AuthencateAsync(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null) return new ApiErrorResult<string>("Account does not exits");//Tài khoản không tồn tại
+            if (user == null) return new ApiErrorResult<string>(Messages.Account_Does_Not_Exits);//Tài khoản không tồn tại
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if (!result.Succeeded)
             {
-                return new ApiErrorResult<string>("Incorrect login");//Đăng nhập không đúng
+                return new ApiErrorResult<string>(Messages.Incorrect_Login);//Đăng nhập không đúng
             }
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
@@ -67,13 +68,13 @@ namespace WCLWebAPI.Server.Repositories
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<bool>("User does not exits");
+                return new ApiErrorResult<bool>(Messages.User_Does_Not_Exits);
             }
             var reult = await _userManager.DeleteAsync(user);
             if (reult.Succeeded)
                 return new ApiSuccessResult<bool>();
 
-            return new ApiErrorResult<bool>("Delete failed");
+            return new ApiErrorResult<bool>(Messages.Delete_Failed);
         }
 
         public async Task<ApiResult<UserVM>> GetByIdAsync(Guid id)
@@ -81,7 +82,7 @@ namespace WCLWebAPI.Server.Repositories
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<UserVM>("User does not exits");
+                return new ApiErrorResult<UserVM>(Messages.User_Does_Not_Exits);
             }
             var roles = await _userManager.GetRolesAsync(user);
             var userVm = new UserVM()
@@ -104,11 +105,11 @@ namespace WCLWebAPI.Server.Repositories
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user != null)
             {
-                return new ApiErrorResult<bool>("Account already exists");
+                return new ApiErrorResult<bool>(Messages.Account_Already_Exists);
             }
             if (await _userManager.FindByEmailAsync(request.Email) != null)
             {
-                return new ApiErrorResult<bool>("Email already exists");
+                return new ApiErrorResult<bool>(Messages.Email_Already_Exists);
             }
             user = new AppUser()
             {
@@ -122,7 +123,7 @@ namespace WCLWebAPI.Server.Repositories
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<bool> {Message = Messages.Msg_Success };
             }
 
             if (result.Errors.Any())
@@ -133,7 +134,7 @@ namespace WCLWebAPI.Server.Repositories
                 return new ApiErrorResult<bool>(messages.ToArray());
             }
             
-            return new ApiErrorResult<bool>("Registration failed");
+            return new ApiErrorResult<bool>(Messages.Registration_Failed);
         }
 
         public async Task<ApiResult<PagedResult<UserVM>>> GetUsersPagingAsync(GetUserPagingRequest request)
@@ -178,7 +179,7 @@ namespace WCLWebAPI.Server.Repositories
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<bool>("Account does not exist");
+                return new ApiErrorResult<bool>(Messages.Account_Does_Not_Exits);
             }
             var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
             foreach (var roleName in removedRoles)
@@ -206,7 +207,7 @@ namespace WCLWebAPI.Server.Repositories
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
             {
-                return new ApiErrorResult<bool>("Email already exists");
+                return new ApiErrorResult<bool>(Messages.Email_Already_Exists);
             }
             var user = await _userManager.FindByIdAsync(id.ToString());
             user.Dob = request.Dob;
@@ -220,7 +221,7 @@ namespace WCLWebAPI.Server.Repositories
             {
                 return new ApiSuccessResult<bool>();
             }
-            return new ApiErrorResult<bool>("Update failed");
+            return new ApiErrorResult<bool>(Messages.Update_Failed);
         }
 
         public async Task<ApiResult<List<UserVM>>> GetUsersAsync()
