@@ -33,6 +33,9 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IUserApiClientServiceInterface, UserApiClientService>();
 builder.Services.AddTransient<IRoleApiClientServiceInterface, RoleApiClientService>();
+builder.Services.AddTransient<IDepartmentApiClientServiceInterface, DepartmentApiClientService>();
+builder.Services.AddTransient<IEmployeeApiClientServiceInterface, EmployeeApiClientService>();
+builder.Services.AddTransient<ITimeSheetApiClientServiceInterface, TimeSheetApiClientService>();
 
 builder.Services.AddRazorPages();
 

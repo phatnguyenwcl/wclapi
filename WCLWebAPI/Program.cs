@@ -51,8 +51,8 @@ builder.Services.AddTransient<IRoleService, RoleRepository>();
 builder.Services.AddTransient<IUserService, UserRepository>();
 
 
-string issuer = builder.Configuration["Tokens:Issuer"]; //.GetValue<string>("Token:Issuer");
-string signingKey = builder.Configuration["Tokens:Key"]; //.GetValue<string>("Token:Key");
+string issuer = builder.Configuration["Tokens:Issuer"];
+string signingKey = builder.Configuration["Tokens:Key"];
 byte[] signingKeyBytes = Encoding.UTF8.GetBytes(signingKey);
 
 builder.Services.AddAuthentication(opt =>

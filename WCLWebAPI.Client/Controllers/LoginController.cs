@@ -55,7 +55,6 @@ namespace WCLWebAPI.Client.Controllers
                 IsPersistent = false
             };
 
-            //HttpContext.Session.SetString("DefaultLanguageId", _configuration["DefaultLanguageId"]);
             HttpContext.Session.SetString("Token", result.ResultObj);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
 

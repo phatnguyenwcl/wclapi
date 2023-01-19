@@ -18,7 +18,6 @@ namespace WCLWebAPI.Client.Controllers
         public IActionResult Index()
         {
             var user = User.Identity.Name;
-            //var ss = HttpContext.Session.GetString("Token");
             return View();
         }
 
@@ -31,14 +30,6 @@ namespace WCLWebAPI.Client.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [HttpPost]
-        public IActionResult Language(NavigationViewModel viewModel)
-        {
-            HttpContext.Session.SetString("DefaultLanguageId", viewModel.CurrentLanguageId);
-
-            return Redirect(viewModel.ReturnUrl);
         }
     }
 }

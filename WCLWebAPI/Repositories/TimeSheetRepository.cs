@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using WCLWebAPI.Server.Common;
+using WCLWebAPI.Server.Constants;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
@@ -16,68 +19,83 @@ namespace WCLWebAPI.Server.Repositories
             _mapper = mapper;
         }
 
-        public IEnumerable<TimeSheetVM> GetTimeSheets()
+        public async Task<ApiResult<IEnumerable<TimeSheetVM>>> GetTimeSheetsAsync()
         {
-            var result = _context.TimeSheets.ToList();
-
+            var result = await _context.TimeSheets.ToListAsync();
             if (!result.Any())
             {
-                return new List<TimeSheetVM>();
+                return new ApiErrorResult<IEnumerable<TimeSheetVM>> { IsSuccessed = false, Message = Messages.Msg_GetFailList };
             }
 
             var mapRes = _mapper.Map<List<TimeSheet>, List<TimeSheetVM>>(result);
 
-            return mapRes;
+            return new ApiSuccessResult<IEnumerable<TimeSheetVM>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes };
         }
 
-        public TimeSheetVM GetTimeSheetDetails(int id)
+        public async Task<ApiResult<TimeSheetVM>> GetTimeSheetDetailsAsync(int id)
         {
-            if (id == null) return new TimeSheetVM();
+            if (id == 0) return new ApiErrorResult<TimeSheetVM>(Messages.Msg_Fail);
 
-            var query = _context.TimeSheets.FirstOrDefault(x => x.ID == id);
+            var query = await _context.TimeSheets.FirstOrDefaultAsync(x => x.ID == id);
 
             var mapRes = _mapper.Map<TimeSheet, TimeSheetVM>(query);
 
-            return mapRes;
+            return new ApiSuccessResult<TimeSheetVM> { Message = Messages.Msg_Success, ResultObj = mapRes };
         }
 
-        public TimeSheetVM AddTimeSheet(TimeSheetVM timeSheet)
+        public async Task<ApiResult<bool>> AddTimeSheetAsync(TimeSheetVM timeSheet)
         {
+            var model = new TimeSheet();
+            //var query
+            
             var mapRes = _mapper.Map<TimeSheetVM, TimeSheet>(timeSheet);
 
             _context.TimeSheets.Add(mapRes);
 
-            return timeSheet;
+
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.TimeSheet_Not_Exist };
+
+            return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
         }
 
-        public TimeSheetVM UpdateTimeSheet(TimeSheetVM timeSheet)
+        public async Task<ApiResult<bool>> UpdateTimeSheetAsync(int id, TimeSheetVM timeSheet)
         {
             var mapRes = _mapper.Map<TimeSheetVM, TimeSheet>(timeSheet);
 
             _context.TimeSheets.Update(mapRes);
 
-            return timeSheet;
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.TimeSheet_Not_Exist };
+
+            return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
         }
 
-        public bool DeleteTimeSheet(int id)
+        public async Task<ApiResult<bool>> DeleteTimeSheetAsync(int id)
         {
-            var query = _context.TimeSheets.FirstOrDefault(x => x.ID == id);
+            var query = await _context.TimeSheets.FirstOrDefaultAsync(x => x.ID == id);
 
-            if (query is null) return false;
+            if (query is null) return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist); ;
 
             _context.TimeSheets.Remove(query);
 
-            return true;
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.TimeSheet_Not_Exist };
+
+            return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
         }
 
-        public bool CheckTimeSheet(int id)
+        public async Task<ApiResult<bool>> CheckTimeSheetAsync(int id)
         {
-            return _context.TimeSheets.Any(x => x.ID == id);
-        }
+            var res = await _context.TimeSheets.AnyAsync(x => x.ID == id);
 
-        public void Save()
-        {
-            _context.SaveChanges();
+            if (!res) return new ApiErrorResult<bool>(Messages.Msg_Fail);
+
+            return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
         }
     }
 }

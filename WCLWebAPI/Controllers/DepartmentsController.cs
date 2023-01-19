@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
 using WCLWebAPI.Server.ViewModels;
 
@@ -20,43 +21,44 @@ namespace WCLWebAPI.Server.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("departments")]
-        public IActionResult GetDepartments()
+        [HttpGet]
+        public async Task<IActionResult> GetDepartments()
         {
-            var department = _department.GetDepartments().ToList();
+            var department = await _department.GetDepartmentsAsync();
             return Ok(department);
         }
 
         [HttpPost("{name}")]
-        public IActionResult CreateDepartment(string name)
+        public async Task<IActionResult> CreateDepartment(string name)
         {
             if (string.IsNullOrEmpty(name)) return BadRequest();
-            _department.AddDepartment(name);
-            return Ok();
+
+            var res = await _department.AddDepartmentAsync(name);
+
+            return Ok(res);
         }
 
-        [HttpPut("{ID}/department")]
-        public IActionResult UpdateDepartment(int ID, [FromBody] DepartmentVM departmentVM)
+        [HttpPut("{id}/department")]
+        public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentVM departmentVM)
         {
-            if (ID == 0) return BadRequest();
-            
-            if (departmentVM is null) return BadRequest();
-
-           _department.UpdateDepartment(departmentVM);
-
-            return Ok(departmentVM);
-        }
-
-        [HttpDelete("{departmentID}")]
-        public IActionResult DeleteDepartment(int departmentID)
-        {
-            if (departmentID == 0)
-            {
+            if (!ModelState.IsValid)
                 return BadRequest();
+
+            var result = await _department.UpdateDepartmentAsync(id, departmentVM);
+
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
             }
-            _department.DeleteDepartment(departmentID);
-            
-            return Ok();
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{departmentID}/deleteDepartment")]
+        public async Task<IActionResult> DeleteDepartment(int departmentID)
+        {
+            var emp = await _department.DeleteDepartmentAsync(departmentID);
+            return Ok(emp);
         }
     }
 }

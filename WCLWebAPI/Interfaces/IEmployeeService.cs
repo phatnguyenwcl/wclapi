@@ -1,16 +1,16 @@
-﻿using WCLWebAPI.Server.Entities;
+﻿using WCLWebAPI.Server.Common;
+using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.ViewModels;
 
 namespace WCLWebAPI.Server.Interfaces
 {
     public interface IEmployeeService
     {
-        IEnumerable<EmployeeVM> GetEmployees();
-        EmployeeVM GetEmployeeDetails(int id);
-        EmployeeVM AddEmployee(EmployeeVM employee);
-        EmployeeVM UpdateEmployee(EmployeeVM employee);
-        bool DeleteEmployee(int id);
-        bool CheckEmployee(int id);
-        void Save();
+        Task<ApiResult<IEnumerable<EmployeeVM>>> GetEmployeesAsync();
+        Task<ApiResult<EmployeeVM>> GetEmployeeDetailsAsync(int id);
+        Task<ApiResult<bool>> AddEmployeeAsync(EmployeeVM employee);
+        Task<ApiResult<bool>> UpdateEmployeeAsync(int id, EmployeeVM employee);
+        Task<ApiResult<bool>> DeleteEmployeeAsync(int id);
+        Task<ApiResult<bool>> CheckEmployeeAsync(int id);
     }
 }

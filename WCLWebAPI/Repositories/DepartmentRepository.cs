@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using WCLWebAPI.Server.Common;
+using WCLWebAPI.Server.Constants;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
 using WCLWebAPI.Server.Interfaces;
@@ -16,82 +19,94 @@ namespace WCLWebAPI.Server.Repositories
             _mapper = mapper;
         }
 
-        public IEnumerable<DepartmentVM> GetDepartments()
+        public async Task<ApiResult<IEnumerable<DepartmentVM>>> GetDepartmentsAsync()
         {
-            var result = _context.Departments.ToList();
-            
+            var result = await _context.Departments.ToListAsync();
+
             if (!result.Any())
             {
-                return new List<DepartmentVM>();
+                return new ApiErrorResult<IEnumerable<DepartmentVM>> { IsSuccessed = false, Message = Messages.Msg_GetFailList };
             }
 
             var mapRes = _mapper.Map<List<Department>, List<DepartmentVM>>(result);
 
-            return mapRes;
+            return new ApiSuccessResult<IEnumerable<DepartmentVM>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes };
         }
 
-        public DepartmentVM GetDepartmentDetails(int id)
+        public async Task<ApiResult<DepartmentVM>> GetDepartmentDetailsAsync(int id)
         {
-            if (id == null) return new DepartmentVM();
+            if (id == 0) return new ApiErrorResult<DepartmentVM>(Messages.Msg_Fail);
 
-            var query = _context.Departments.FirstOrDefault(x => x.ID == id);
+            var query = await _context.Departments.FirstOrDefaultAsync(x => x.ID == id);
 
             var mapRes = _mapper.Map<Department, DepartmentVM>(query);
 
-            return mapRes;
+            return new ApiSuccessResult<DepartmentVM> { Message = Messages.Msg_Success, ResultObj = mapRes };
         }
 
-        public void AddDepartment(string department)
+        public async Task<ApiResult<bool>> AddDepartmentAsync(string department)
         {
-            var departmentModel = new Department();
-            departmentModel.Name = department;
-            _context.Departments.Add(departmentModel);
-            _context.SaveChanges();
+            var model = new Department();
+
+            model.Name = department;
+
+            _context.Departments.Add(model);
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
+
+            return new ApiErrorResult<bool>(Messages.Department_Not_Exist);
         }
 
-        public void UpdateDepartment(DepartmentVM department)
+        public async Task<ApiResult<bool>> UpdateDepartmentAsync(int id, DepartmentVM department)
         {
-            var query = _context.Departments.FirstOrDefault(x => x.ID == department.ID);
-            if (query != null)
-            {
-                query.Name = department.Name;
-                _context.Departments.Update(query);
-                
-                _context.SaveChanges();
-            }
+            var query = await _context.Departments.FirstOrDefaultAsync(x => x.ID == id);
+
+            if (query == null) return new ApiErrorResult<bool>(Messages.Department_Not_Exist);
+
+            query.Name = department.Name;
+
+            _context.Departments.Update(query);
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
+
+            return new ApiErrorResult<bool>(Messages.Department_Not_Exist);
         }
 
-        public bool DeleteDepartment(int id)
-        {            
-            var query = _context.Departments.FirstOrDefault(x => x.ID == id);
+        public async Task<ApiResult<bool>> DeleteDepartmentAsync(int id)
+        {
+            var query = await _context.Departments.FirstOrDefaultAsync(x => x.ID == id);
 
-            if (query is null) return false;
+            if (query is null) return new ApiErrorResult<bool>(Messages.Department_Not_Exist);
 
             _context.Departments.Remove(query);
 
-            _context.SaveChanges();
+            var result = await _context.SaveChangesAsync();
 
-            return true;
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
+
+            return new ApiErrorResult<bool>(Messages.Department_Not_Exist);
         }
 
-        public bool CheckDepartment(int id) 
+        public async Task<ApiResult<bool>> CheckDepartmentAsync(int id) 
         {
-            return _context.Departments.Any(x => x.ID == id);
+            var res = await _context.Departments.AnyAsync(x => x.ID == id);
+
+            if (!res) return new ApiErrorResult<bool>(Messages.Department_Not_Exist);
+
+            return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
         }
 
-        public DepartmentVM GetDepartmentFirst()
+        public async Task<ApiResult<DepartmentVM>> GetDepartmentFirstAsync()
         {
-            return _mapper.ProjectTo<DepartmentVM>(_context.Departments.OrderByDescending(x => x.DateCreated)).FirstOrDefault();
-        }
+            var result = await _mapper.ProjectTo<DepartmentVM>(_context.Departments.OrderByDescending(x => x.DateCreated)).FirstOrDefaultAsync();
 
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
+            if (result == null) return new ApiErrorResult<DepartmentVM>(Messages.Department_Not_Exist);
 
-        public Department GetById(int id)
-        {
-            return _context.Departments.FirstOrDefault(x => x.ID == id);
+            return new ApiSuccessResult<DepartmentVM> { Message = Messages.Msg_Success, ResultObj = result };
         }
     }
 }
