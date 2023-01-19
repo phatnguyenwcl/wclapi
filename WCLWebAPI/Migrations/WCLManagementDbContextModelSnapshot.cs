@@ -186,6 +186,18 @@ namespace WCLWebAPI.Server.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("AppUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("19aef916-f24e-438c-9529-54419867ce85"),
+                            RoleId = new Guid("b00cc2c4-385e-4452-b9fe-80b11e6e8917")
+                        },
+                        new
+                        {
+                            UserId = new Guid("b7f8ab44-dc1e-48c0-9c84-210a2efb1892"),
+                            RoleId = new Guid("f3dab7a0-a8fa-450b-8cec-b22703ff5233")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -247,6 +259,48 @@ namespace WCLWebAPI.Server.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeID = 0,
+                            Name = "IT / IT Dev"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeID = 0,
+                            Name = "Import"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeID = 0,
+                            Name = "HR"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeID = 0,
+                            Name = "Accounting"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeID = 0,
+                            Name = "Inventory"
+                        });
                 });
 
             modelBuilder.Entity("WCLWebAPI.Server.Entities.Employee", b =>
@@ -291,6 +345,9 @@ namespace WCLWebAPI.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsManager")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Marital")
                         .HasColumnType("int");
 
@@ -312,6 +369,80 @@ namespace WCLWebAPI.Server.Migrations
                     b.HasIndex("DepartmentID");
 
                     b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Address = "Dien Khanh",
+                            CCCD = "225574345",
+                            DOB = new DateTime(1990, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentID = 1,
+                            Email = "vinhnx@gmail.com",
+                            Gender = 1,
+                            Imgage = "string",
+                            IsManager = true,
+                            Marital = 0,
+                            Name = "Nguyen Xuan Vinh",
+                            Phone = "string",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Address = "Vinh Luong",
+                            CCCD = "225574510",
+                            DOB = new DateTime(1994, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentID = 1,
+                            Email = "nhkphat@gmail.com",
+                            Gender = 1,
+                            Imgage = "string",
+                            IsManager = false,
+                            Marital = 1,
+                            Name = "Nguyen Huu Khanh Phat",
+                            Phone = "string",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Address = "Nha Trang",
+                            CCCD = "295574598",
+                            DOB = new DateTime(1991, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentID = 2,
+                            Email = "anni@gmail.com",
+                            Gender = 0,
+                            Imgage = "string",
+                            IsManager = false,
+                            Marital = 1,
+                            Name = "Anni",
+                            Phone = "string",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Address = "Nha Trang",
+                            CCCD = "225574513",
+                            DOB = new DateTime(2000, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DepartmentID = 3,
+                            Email = "alice@gmail.com",
+                            Gender = 0,
+                            Imgage = "string",
+                            IsManager = false,
+                            Marital = 0,
+                            Name = "Alice",
+                            Phone = "string",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                        });
                 });
 
             modelBuilder.Entity("WCLWebAPI.Server.Entities.TimeSheet", b =>
@@ -359,6 +490,24 @@ namespace WCLWebAPI.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("AppRole");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b00cc2c4-385e-4452-b9fe-80b11e6e8917"),
+                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000000",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN",
+                            Description = "Administrator"
+                        },
+                        new
+                        {
+                            Id = new Guid("f3dab7a0-a8fa-450b-8cec-b22703ff5233"),
+                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000000",
+                            Name = "Editor",
+                            NormalizedName = "EDITOR",
+                            Description = "Editor"
+                        });
                 });
 
             modelBuilder.Entity("WCLWebAPI.Server.Entities.AppUser", b =>
@@ -377,6 +526,46 @@ namespace WCLWebAPI.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("AppUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("19aef916-f24e-438c-9529-54419867ce85"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "004d7abd-9ca9-494a-9610-2a07df0cfa8f",
+                            Email = "nhkphat@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "NHKPHAT@GMAIL.COM",
+                            NormalizedUserName = "NHKPHAT",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGQe2Lvs29b833as+LEyHaDrYMGfQZwVLwQ0mB9YaYZpivL5jOBarW3rUOCfzFF9BQ==",
+                            PhoneNumber = "0972532751",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "nhkphat",
+                            Dob = new DateTime(1994, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Phat",
+                            LastName = "Nguyen"
+                        },
+                        new
+                        {
+                            Id = new Guid("b7f8ab44-dc1e-48c0-9c84-210a2efb1892"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "955f39e0-c3a9-4960-a784-091d2ece29b3",
+                            Email = "vinhnx@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "VINHNX@GMAIL.COM",
+                            NormalizedUserName = "VINHNX",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKnDJ6Onjpmw9nYW+u3oxg27Lb1S/3mUb3OYXS0NnGYvGrxXGyHQ2hyu/QIsGqzfcA==",
+                            PhoneNumber = "0935532758",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "vinhnx",
+                            Dob = new DateTime(1990, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Vinh",
+                            LastName = "Nguyen"
+                        });
                 });
 
             modelBuilder.Entity("WCLWebAPI.Server.Entities.Employee", b =>

@@ -30,7 +30,7 @@ namespace WCLWebAPI.Server.EF
 
             builder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
             builder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
-
+            
             //Init fake data
             builder.SeedData();
         }

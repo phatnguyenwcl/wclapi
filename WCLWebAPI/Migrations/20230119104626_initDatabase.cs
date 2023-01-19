@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace WCLWebAPI.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class initDb : Migration
+    public partial class initDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -171,6 +173,7 @@ namespace WCLWebAPI.Server.Migrations
                     Gender = table.Column<int>(type: "int", nullable: false),
                     DepartmentID = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsManager = table.Column<bool>(type: "bit", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -208,6 +211,56 @@ namespace WCLWebAPI.Server.Migrations
                         principalTable: "Employees",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Discriminator", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("b00cc2c4-385e-4452-b9fe-80b11e6e8917"), "00000000-0000-0000-0000-000000000000", "Administrator", "AppRole", "Admin", "ADMIN" },
+                    { new Guid("f3dab7a0-a8fa-450b-8cec-b22703ff5233"), "00000000-0000-0000-0000-000000000000", "Editor", "AppRole", "Editor", "EDITOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("b00cc2c4-385e-4452-b9fe-80b11e6e8917"), new Guid("19aef916-f24e-438c-9529-54419867ce85") },
+                    { new Guid("f3dab7a0-a8fa-450b-8cec-b22703ff5233"), new Guid("b7f8ab44-dc1e-48c0-9c84-210a2efb1892") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Dob", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("19aef916-f24e-438c-9529-54419867ce85"), 0, "004d7abd-9ca9-494a-9610-2a07df0cfa8f", "AppUser", new DateTime(1994, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "nhkphat@gmail.com", true, "Phat", "Nguyen", true, null, "NHKPHAT@GMAIL.COM", "NHKPHAT", "AQAAAAEAACcQAAAAEGQe2Lvs29b833as+LEyHaDrYMGfQZwVLwQ0mB9YaYZpivL5jOBarW3rUOCfzFF9BQ==", "0972532751", false, null, false, "nhkphat" },
+                    { new Guid("b7f8ab44-dc1e-48c0-9c84-210a2efb1892"), 0, "955f39e0-c3a9-4960-a784-091d2ece29b3", "AppUser", new DateTime(1990, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "vinhnx@gmail.com", true, "Vinh", "Nguyen", true, null, "VINHNX@GMAIL.COM", "VINHNX", "AQAAAAEAACcQAAAAEKnDJ6Onjpmw9nYW+u3oxg27Lb1S/3mUb3OYXS0NnGYvGrxXGyHQ2hyu/QIsGqzfcA==", "0935532758", false, null, false, "vinhnx" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "ID", "DateCreated", "DateModified", "EmployeeID", "Name" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "IT / IT Dev" },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "Import" },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "HR" },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "Accounting" },
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "Inventory" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Employees",
+                columns: new[] { "ID", "Address", "CCCD", "DOB", "DateCreated", "DateModified", "DepartmentID", "Email", "Gender", "Imgage", "IsManager", "Marital", "Name", "Phone", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "Dien Khanh", "225574345", new DateTime(1990, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "vinhnx@gmail.com", 1, "string", true, 0, "Nguyen Xuan Vinh", "string", new Guid("00000000-0000-0000-0000-000000000000") },
+                    { 2, "Vinh Luong", "225574510", new DateTime(1994, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "nhkphat@gmail.com", 1, "string", false, 1, "Nguyen Huu Khanh Phat", "string", new Guid("00000000-0000-0000-0000-000000000000") },
+                    { 3, "Nha Trang", "295574598", new DateTime(1991, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "anni@gmail.com", 0, "string", false, 1, "Anni", "string", new Guid("00000000-0000-0000-0000-000000000000") },
+                    { 4, "Nha Trang", "225574513", new DateTime(2000, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "alice@gmail.com", 0, "string", false, 0, "Alice", "string", new Guid("00000000-0000-0000-0000-000000000000") }
                 });
 
             migrationBuilder.CreateIndex(
