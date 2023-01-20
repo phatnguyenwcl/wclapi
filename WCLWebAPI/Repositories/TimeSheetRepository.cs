@@ -46,30 +46,43 @@ namespace WCLWebAPI.Server.Repositories
         public async Task<ApiResult<bool>> AddTimeSheetAsync(TimeSheetVM timeSheet)
         {
             var model = new TimeSheet();
-            //var query
-            
+
+            var queryEmployee = await _context.Employees.FirstOrDefaultAsync(x => x.ID == timeSheet.EmployeeID);
+
+            if (queryEmployee is null) return new ApiErrorResult<bool>(Messages.Staff_Not_Exist);
+
             var mapRes = _mapper.Map<TimeSheetVM, TimeSheet>(timeSheet);
 
             _context.TimeSheets.Add(mapRes);
 
-
-
             var result = await _context.SaveChangesAsync();
 
-            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.TimeSheet_Not_Exist };
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
 
             return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
         }
 
         public async Task<ApiResult<bool>> UpdateTimeSheetAsync(int id, TimeSheetVM timeSheet)
         {
-            var mapRes = _mapper.Map<TimeSheetVM, TimeSheet>(timeSheet);
+            var queryEmployee = await _context.Employees.FirstOrDefaultAsync(x => x.ID == timeSheet.EmployeeID);
 
-            _context.TimeSheets.Update(mapRes);
+            if (queryEmployee is null) return new ApiErrorResult<bool>(Messages.Staff_Not_Exist);
+
+            var queryTimeSheet = await _context.TimeSheets.FirstOrDefaultAsync(x => x.ID == id);
+
+            if (queryTimeSheet is null) return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
+
+            queryTimeSheet.EmployeeID = timeSheet.EmployeeID;
+            queryTimeSheet.StartWorking = timeSheet.StartWorking;
+            queryTimeSheet.EndWorking = timeSheet.EndWorking;
+            queryTimeSheet.BreakStart = timeSheet.BreakStart;
+            queryTimeSheet.BreakEnd = timeSheet.BreakEnd;
+
+            _context.TimeSheets.Update(queryTimeSheet);
 
             var result = await _context.SaveChangesAsync();
 
-            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.TimeSheet_Not_Exist };
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
 
             return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
         }
@@ -84,7 +97,7 @@ namespace WCLWebAPI.Server.Repositories
 
             var result = await _context.SaveChangesAsync();
 
-            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.TimeSheet_Not_Exist };
+            if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
 
             return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
         }

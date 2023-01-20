@@ -6,8 +6,6 @@ namespace WCLWebAPI.Server.ViewModels
     {
         public int EmployeeID { get; set; }
 
-        public Employee Employee { get; set; }
-
         public DateTime StartWorking { get; set; }
 
         public DateTime EndWorking { get; set; }
