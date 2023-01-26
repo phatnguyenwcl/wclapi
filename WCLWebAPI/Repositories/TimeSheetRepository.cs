@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Schema;
 using WCLWebAPI.Server.Common;
 using WCLWebAPI.Server.Constants;
 using WCLWebAPI.Server.EF;
@@ -26,7 +27,7 @@ namespace WCLWebAPI.Server.Repositories
             {
                 return new ApiErrorResult<IEnumerable<TimeSheetVM>> { IsSuccessed = false, Message = Messages.Msg_GetFailList };
             }
-
+            
             var mapRes = _mapper.Map<List<TimeSheet>, List<TimeSheetVM>>(result);
 
             return new ApiSuccessResult<IEnumerable<TimeSheetVM>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes };
@@ -91,7 +92,7 @@ namespace WCLWebAPI.Server.Repositories
         {
             var query = await _context.TimeSheets.FirstOrDefaultAsync(x => x.ID == id);
 
-            if (query is null) return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist); ;
+            if (query is null) return new ApiErrorResult<bool>(Messages.TimeSheet_Not_Exist);
 
             _context.TimeSheets.Remove(query);
 
