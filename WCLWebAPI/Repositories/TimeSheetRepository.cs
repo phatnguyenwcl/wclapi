@@ -20,28 +20,28 @@ namespace WCLWebAPI.Server.Repositories
             _mapper = mapper;
         }
 
-        public async Task<ApiResult<IEnumerable<TimeSheetVM>>> GetTimeSheetsAsync()
+        public async Task<ApiResult<IEnumerable<TimeSheetResponse>>> GetTimeSheetsAsync()
         {
             var result = await _context.TimeSheets.ToListAsync();
             if (!result.Any())
             {
-                return new ApiErrorResult<IEnumerable<TimeSheetVM>> { IsSuccessed = false, Message = Messages.Msg_GetFailList };
+                return new ApiErrorResult<IEnumerable<TimeSheetResponse>> { IsSuccessed = false, Message = Messages.Msg_GetFailList };
             }
             
-            var mapRes = _mapper.Map<List<TimeSheet>, List<TimeSheetVM>>(result);
+            var mapRes = _mapper.Map<List<TimeSheet>, List<TimeSheetResponse>>(result);
 
-            return new ApiSuccessResult<IEnumerable<TimeSheetVM>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes };
+            return new ApiSuccessResult<IEnumerable<TimeSheetResponse>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes };
         }
 
-        public async Task<ApiResult<TimeSheetVM>> GetTimeSheetDetailsAsync(int id)
+        public async Task<ApiResult<TimeSheetResponse>> GetTimeSheetDetailsAsync(int id)
         {
-            if (id == 0) return new ApiErrorResult<TimeSheetVM>(Messages.Msg_Fail);
+            if (id == 0) return new ApiErrorResult<TimeSheetResponse>(Messages.Msg_Fail);
 
             var query = await _context.TimeSheets.FirstOrDefaultAsync(x => x.ID == id);
 
-            var mapRes = _mapper.Map<TimeSheet, TimeSheetVM>(query);
+            var mapRes = _mapper.Map<TimeSheet, TimeSheetResponse>(query);
 
-            return new ApiSuccessResult<TimeSheetVM> { Message = Messages.Msg_Success, ResultObj = mapRes };
+            return new ApiSuccessResult<TimeSheetResponse> { Message = Messages.Msg_Success, ResultObj = mapRes };
         }
 
         public async Task<ApiResult<bool>> AddTimeSheetAsync(TimeSheetVM timeSheet)

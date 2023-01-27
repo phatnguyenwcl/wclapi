@@ -6,19 +6,18 @@ using WCLWebAPI.Server.Common;
 using WCLWebAPI.Server.ViewModels.System.Roles;
 using WCLWebAPI.Server.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authorization;
+using WCLWebAPI.Server.Constants;
 
 namespace WCLWebAPI.Client.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserApiClientServiceInterface _userApiClient;
-        private readonly IConfiguration _configuration;
         private readonly IRoleApiClientServiceInterface _roleApiClient;
 
-        public UserController(IUserApiClientServiceInterface userApiClientServiceInterface, IConfiguration configuration, IRoleApiClientServiceInterface roleApiClientServiceInterface)
+        public UserController(IUserApiClientServiceInterface userApiClientServiceInterface, IRoleApiClientServiceInterface roleApiClientServiceInterface)
         {
             _userApiClient = userApiClientServiceInterface;
-            _configuration = configuration;
             _roleApiClient = roleApiClientServiceInterface;
         }
 
@@ -55,7 +54,7 @@ namespace WCLWebAPI.Client.Controllers
             var result = await _userApiClient.RegisterUserAsync(request);
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Thêm mới người dùng thành công";
+                TempData["result"] = Messages.N_User_SCC_Added;
                 return RedirectToAction("Index");
             }
 
@@ -93,7 +92,7 @@ namespace WCLWebAPI.Client.Controllers
             var result = await _userApiClient.UpdateUserAsync(request.Id, request);
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Cập nhật người dùng thành công";
+                TempData["result"] = Messages.U_User_SCC;
                 return RedirectToAction("Index");
             }
 
@@ -127,7 +126,7 @@ namespace WCLWebAPI.Client.Controllers
             var result = await _userApiClient.DeleteAsync(request.Id);
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Xóa người dùng thành công";
+                TempData["result"] = Messages.R_User_SCC;
                 return RedirectToAction("Index");
             }
 
@@ -152,7 +151,7 @@ namespace WCLWebAPI.Client.Controllers
 
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Cập nhật quyền thành công";
+                TempData["result"] = Messages.U_Permissions_SCC;
                 return RedirectToAction("Index");
             }
 

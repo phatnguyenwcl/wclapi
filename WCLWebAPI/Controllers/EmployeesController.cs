@@ -52,5 +52,12 @@ namespace WCLWebAPI.Server.Controllers
             var emp = await _employeeService.DeleteEmployeeAsync(id);
             return Ok(emp);
         }
+
+        [HttpGet("{name}/highestWorkingHours")]
+        public async Task<IActionResult> GetHighestWorkingHours(string name)
+        {
+            var result = await _employeeService.GetHighestWorkingHours(name);
+            return Ok(result);
+        }
     }
 }

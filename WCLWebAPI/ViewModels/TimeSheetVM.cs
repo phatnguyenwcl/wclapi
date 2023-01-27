@@ -4,22 +4,6 @@ namespace WCLWebAPI.Server.ViewModels
 {
     public class TimeSheetVM
     {
-        
-        public TimeSpan LunchTime
-        {
-            get
-            {
-                return BreakEnd.Subtract(BreakStart);
-            }
-        }
-
-        public TimeSpan ShiftEndTime
-        {
-            get
-            {
-                return EndWorking.Subtract(StartWorking);
-            }
-        }
 
         public int EmployeeID { get; set; }
 

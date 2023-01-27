@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using WCLWebAPI.Server.Common;
 using WCLWebAPI.Server.Constants;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
+using WCLWebAPI.Server.Enums;
 using WCLWebAPI.Server.Interfaces;
 using WCLWebAPI.Server.ViewModels;
 
@@ -22,15 +24,15 @@ namespace WCLWebAPI.Server.Repositories
         public async Task<ApiResult<IEnumerable<EmployeeVM>>> GetEmployeesAsync()
         {
             var result = await _context.Employees.ToListAsync();
-            
+
             if (!result.Any())
             {
-                return new ApiErrorResult<IEnumerable<EmployeeVM>> { IsSuccessed = false, Message = Messages.Msg_GetFailList};
+                return new ApiErrorResult<IEnumerable<EmployeeVM>> { IsSuccessed = false, Message = Messages.Msg_GetFailList };
             }
 
             var mapRes = _mapper.Map<List<Employee>, List<EmployeeVM>>(result);
 
-            return new ApiSuccessResult<IEnumerable<EmployeeVM>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes};
+            return new ApiSuccessResult<IEnumerable<EmployeeVM>> { Message = Messages.Msg_GetSuccessList, IsSuccessed = true, ResultObj = mapRes };
         }
 
         public async Task<ApiResult<EmployeeVM>> GetEmployeeDetailsAsync(int id)
@@ -52,7 +54,7 @@ namespace WCLWebAPI.Server.Repositories
             var queryDepartment = await _context.Departments.FirstOrDefaultAsync(x => x.Name == "HR");
 
             if (queryDepartment == null) return new ApiErrorResult<bool>(Messages.Staff_Not_Exist);
-            
+
             mapRes.DepartmentID = queryDepartment.ID;
 
             _context.Employees.Add(mapRes);
@@ -67,7 +69,7 @@ namespace WCLWebAPI.Server.Repositories
         public async Task<ApiResult<bool>> UpdateEmployeeAsync(int id, EmployeeVM employee)
         {
             var query = await _context.Employees.FirstOrDefaultAsync(x => x.ID == id);
-            
+
             if (query == null) return new ApiErrorResult<bool>(Messages.Staff_Not_Exist);
 
             query.Name = employee.Name;
@@ -81,7 +83,7 @@ namespace WCLWebAPI.Server.Repositories
             query.Email = employee.Email;
 
             _context.Employees.Update(query);
-            
+
             var result = await _context.SaveChangesAsync();
 
             if (result > 0) return new ApiSuccessResult<bool> { Message = Messages.Msg_Success };
@@ -119,6 +121,67 @@ namespace WCLWebAPI.Server.Repositories
             if (resMap.ID == 0)
                 return new EmployeeVM();
             return resMap;
+        }
+
+        public async Task<ApiResult<IEnumerable<EmployeeResponse>>> GetHighestWorkingHours(string name = "all")
+        {
+            var queryAllWorkings = await GetWorkingTimeSheets();
+
+            var groupRes = (from qw in queryAllWorkings
+                           group qw by qw.ID into grouped
+                           select new EmployeeWorkingResponse
+                           {
+                               ID = grouped.Key,
+                               Name = grouped.FirstOrDefault(x => x.ID == grouped.Key).Name,
+                               DOB = grouped.FirstOrDefault(x => x.ID == grouped.Key).DOB,
+                               CCCD = grouped.FirstOrDefault(x => x.ID == grouped.Key).CCCD,
+                               Address = grouped.FirstOrDefault(x => x.ID == grouped.Key).Address,
+                               Gender = grouped.FirstOrDefault(x => x.ID == grouped.Key).Gender,
+                               IsManager = grouped.FirstOrDefault(x => x.ID == grouped.Key).IsManager,
+                               DepartmentID = grouped.FirstOrDefault(x => x.ID == grouped.Key).DepartmentID,
+                               StartWorking = grouped.FirstOrDefault(x => x.ID == grouped.Key).StartWorking,
+                               EndWorking = grouped.FirstOrDefault(x => x.ID == grouped.Key).EndWorking,
+                               BreakStart = grouped.FirstOrDefault(x => x.ID == grouped.Key).BreakStart,
+                               BreakEnd = grouped.FirstOrDefault(x => x.ID == grouped.Key).BreakEnd,
+                               TotalTime = grouped.Aggregate(new TimeSpan(0), (ts, er) => ts.Add(er.TotalDay))
+                           }).ToList();
+
+            var mapRes = _mapper.Map<List<EmployeeWorkingResponse>,List<EmployeeResponse>>(groupRes);
+
+            mapRes.OrderByDescending(x => x.TotalTime).ToList();
+
+            return new ApiSuccessResult<IEnumerable<EmployeeResponse>> { Message = Messages.Msg_Success, ResultObj = mapRes };
+        }
+
+        private async Task<List<EmployeeResponse>> GetWorkingTimeSheets()
+        {
+            var isEmployee = _context.Employees.Any();
+            
+            if (!isEmployee) return new List<EmployeeResponse>();
+
+            var query = await (from e in _context.Employees
+                        join t in _context.TimeSheets on e.ID equals t.EmployeeID into group_join
+                        from selector in group_join.DefaultIfEmpty()
+                            //group s by e.DepartmentID into grouped 
+                        select new EmployeeResponse
+                        {
+                            ID = e.ID,
+                            Name = e.Name,
+                            DOB = e.DOB,
+                            CCCD = e.CCCD,
+                            Address = e.Address,
+                            Gender = e.Gender,
+                            IsManager = e.IsManager,
+                            DepartmentID = e.DepartmentID,
+                            StartWorking = selector != null ? selector.StartWorking : DateTime.Now,
+                            EndWorking = selector != null ? selector.EndWorking : DateTime.Now,
+                            BreakStart = selector != null ? selector.BreakStart : DateTime.Now,
+                            BreakEnd = selector != null ? selector.BreakEnd : DateTime.Now
+                        }).ToListAsync();
+
+            if (!query.Any()) return new List<EmployeeResponse>();
+
+            return query.OrderByDescending(x => x.TotalDay).ToList();
         }
     }
 }
