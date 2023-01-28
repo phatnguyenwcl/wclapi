@@ -41,5 +41,8 @@ namespace WCLWebAPI.Server.ViewModels
             }
         }
         public TimeSpan TotalTime { get; set; }
+
+        public double TotalWorkingHour { get; set; }
+        public string TotalWorkingHours { get; set; }
     }
 }

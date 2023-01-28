@@ -148,10 +148,16 @@ namespace WCLWebAPI.Server.Repositories
                                BreakEnd = grouped.FirstOrDefault(x => x.ID == grouped.Key).BreakEnd,
                                TotalTime = grouped.Aggregate(new TimeSpan(0), (ts, er) => ts.Add(er.TotalDay))
                            }).ToList();
+            
+            //parse to totalHours
+            groupRes.ForEach(e => {
+                e.TotalWorkingHours = string.Format("{0:0.0}", e.TotalTime.TotalHours);
+                e.TotalWorkingHour = e.TotalTime.TotalHours;
+            });
 
             var mapRes = _mapper.Map<List<EmployeeWorkingResponse>,List<EmployeeResponse>>(groupRes);
 
-            mapRes.OrderByDescending(x => x.TotalTime).ToList();
+            mapRes.OrderByDescending(x => x.TotalWorkingHour).ToList();
 
             return new ApiSuccessResult<IEnumerable<EmployeeResponse>> { Message = Messages.Msg_Success, ResultObj = mapRes };
         }

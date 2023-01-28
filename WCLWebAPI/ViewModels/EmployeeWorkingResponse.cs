@@ -29,5 +29,8 @@ namespace WCLWebAPI.Server.ViewModels
         public DateTime BreakEnd { get; set; }
         
         public TimeSpan TotalTime { get; set; }
+
+        public double TotalWorkingHour { get; set; }
+        public string TotalWorkingHours { get; set; }
     }
 }
