@@ -53,10 +53,10 @@ namespace WCLWebAPI.Server.Controllers
             return Ok(emp);
         }
 
-        [HttpGet("{name}/highestWorkingHours")]
-        public async Task<IActionResult> GetHighestWorkingHours(string name)
+        [HttpGet("{keyword}/highestWorkingHours")]
+        public async Task<IActionResult> GetHighestWorkingHours(string? keyword)
         {
-            var result = await _employeeService.GetHighestWorkingHours(name);
+            var result = await _employeeService.GetHighestWorkingHours(keyword);
             return Ok(result);
         }
     }

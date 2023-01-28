@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using WCLWebAPI.Server.Common;
@@ -123,9 +124,11 @@ namespace WCLWebAPI.Server.Repositories
             return resMap;
         }
 
-        public async Task<ApiResult<IEnumerable<EmployeeResponse>>> GetHighestWorkingHours(string name = "all")
+        public async Task<ApiResult<IEnumerable<EmployeeResponse>>> GetHighestWorkingHours(string? keyword)
         {
-            var queryAllWorkings = await GetWorkingTimeSheets();
+            List<EmployeeResponse> queryAllWorkings = new List<EmployeeResponse>();
+
+            queryAllWorkings = await GetWorkingTimeSheets(keyword);
 
             var groupRes = (from qw in queryAllWorkings
                            group qw by qw.ID into grouped
@@ -153,14 +156,21 @@ namespace WCLWebAPI.Server.Repositories
             return new ApiSuccessResult<IEnumerable<EmployeeResponse>> { Message = Messages.Msg_Success, ResultObj = mapRes };
         }
 
-        private async Task<List<EmployeeResponse>> GetWorkingTimeSheets()
+        private async Task<List<EmployeeResponse>> GetWorkingTimeSheets(string? keyword)
         {
-            var isEmployee = _context.Employees.Any();
+            IQueryable<Employee> queryEmployee = _context.Employees;
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                queryEmployee = queryEmployee.Where(x => x.Name.Contains(keyword));
+            }
+
+            var isEmployee = queryEmployee.Any();
             
             if (!isEmployee) return new List<EmployeeResponse>();
 
-            var query = await (from e in _context.Employees
-                        join t in _context.TimeSheets on e.ID equals t.EmployeeID into group_join
+            var query = await (from e in queryEmployee
+                               join t in _context.TimeSheets on e.ID equals t.EmployeeID into group_join
                         from selector in group_join.DefaultIfEmpty()
                             //group s by e.DepartmentID into grouped 
                         select new EmployeeResponse
