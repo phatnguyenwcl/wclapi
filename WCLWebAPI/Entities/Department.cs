@@ -13,8 +13,6 @@ namespace WCLWebAPI.Server.Entities
         [StringLength(100)]
         public string Name { get; set; }
 
-        public int EmployeeID { get; set; }
-
         public virtual ICollection<Employee> Employees { set; get; }
 
         public DateTime DateCreated { get; set; }

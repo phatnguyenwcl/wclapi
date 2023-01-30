@@ -59,5 +59,19 @@ namespace WCLWebAPI.Server.Controllers
             var result = await _employeeService.GetHighestWorkingHours(keyword);
             return Ok(result);
         }
+        
+        [HttpGet("{keyword}/getWorkingTimes")]
+        public async Task<IActionResult> GetWorkingTimes(string? keyword)
+        {
+            var result = await _employeeService.GetListWorkingTimes(keyword);
+            return Ok(result);
+        }
+        
+        [HttpGet("{id}/employeePayroll")]
+        public async Task<IActionResult> EmployeePayroll(int? id)
+        {
+            var result = await _employeeService.EmployeePayroll(id);
+            return Ok(result);
+        }
     }
 }

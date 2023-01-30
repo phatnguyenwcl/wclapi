@@ -26,5 +26,7 @@ namespace WCLWebAPI.Server.ViewModels
         public Gender Gender { get; set; }
 
         public int DepartmentID { get; set; }
+
+        public decimal Salary { get; set; }
     }
 }

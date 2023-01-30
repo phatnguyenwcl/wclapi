@@ -12,10 +12,13 @@ namespace WCLWebAPI.Server.ViewModels
         public Gender Gender { get; set; }
         public bool IsManager { get; set; }
         public int DepartmentID { get; set; }
+        public string DepartmentName { get; set; }
         public DateTime StartWorking { get; set; }
         public DateTime EndWorking { get; set; }
         public DateTime BreakStart { get; set; }
         public DateTime BreakEnd { get; set; }
+
+        public decimal Salary { get; set; }
 
         public TimeSpan Lunch
         {
@@ -43,6 +46,5 @@ namespace WCLWebAPI.Server.ViewModels
         public TimeSpan TotalTime { get; set; }
 
         public double TotalWorkingHour { get; set; }
-        public string TotalWorkingHours { get; set; }
     }
 }

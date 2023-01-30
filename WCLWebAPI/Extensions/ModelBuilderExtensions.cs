@@ -115,7 +115,6 @@ namespace WCLWebAPI.Server.Extensions
                     {
                         ID = 1,
                         Name = "IT / IT Dev",
-                        EmployeeID = 0,
                         DateCreated = new DateTime(),
                         DateModified = new DateTime()
                     },
@@ -123,7 +122,6 @@ namespace WCLWebAPI.Server.Extensions
                     {
                         ID = 2,
                         Name = "Import",
-                        EmployeeID = 0,
                         DateCreated = new DateTime(),
                         DateModified = new DateTime()
                     },
@@ -131,7 +129,6 @@ namespace WCLWebAPI.Server.Extensions
                     {
                         ID = 3,
                         Name = "HR",
-                        EmployeeID = 0,
                         DateCreated = new DateTime(),
                         DateModified = new DateTime()
                     },
@@ -139,7 +136,6 @@ namespace WCLWebAPI.Server.Extensions
                     {
                         ID = 4,
                         Name = "Accounting",
-                        EmployeeID = 0,
                         DateCreated = new DateTime(),
                         DateModified = new DateTime()
                     },
@@ -147,7 +143,6 @@ namespace WCLWebAPI.Server.Extensions
                     {
                         ID = 5,
                         Name = "Inventory",
-                        EmployeeID = 0,
                         DateCreated = new DateTime(),
                         DateModified = new DateTime()
                     }

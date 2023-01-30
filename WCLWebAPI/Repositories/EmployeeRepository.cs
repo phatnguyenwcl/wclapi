@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
+using System.Text.RegularExpressions;
 using WCLWebAPI.Server.Common;
 using WCLWebAPI.Server.Constants;
 using WCLWebAPI.Server.EF;
 using WCLWebAPI.Server.Entities;
-using WCLWebAPI.Server.Enums;
 using WCLWebAPI.Server.Interfaces;
 using WCLWebAPI.Server.ViewModels;
 
@@ -128,7 +126,7 @@ namespace WCLWebAPI.Server.Repositories
         {
             List<EmployeeResponse> queryAllWorkings = new List<EmployeeResponse>();
 
-            queryAllWorkings = await GetWorkingTimeSheets(keyword);
+            queryAllWorkings = await GetWorkingTimeSheets(null, keyword);
 
             var groupRes = (from qw in queryAllWorkings
                            group qw by qw.ID into grouped
@@ -151,8 +149,7 @@ namespace WCLWebAPI.Server.Repositories
             
             //parse to totalHours
             groupRes.ForEach(e => {
-                e.TotalWorkingHours = string.Format("{0:0.0}", e.TotalTime.TotalHours);
-                e.TotalWorkingHour = e.TotalTime.TotalHours;
+                e.TotalWorkingHour = Math.Round(e.TotalTime.TotalHours, 2);
             });
 
             var mapRes = _mapper.Map<List<EmployeeWorkingResponse>,List<EmployeeResponse>>(groupRes);
@@ -160,6 +157,18 @@ namespace WCLWebAPI.Server.Repositories
             mapRes.OrderByDescending(x => x.TotalWorkingHour).ToList();
 
             return new ApiSuccessResult<IEnumerable<EmployeeResponse>> { Message = Messages.Msg_Success, ResultObj = mapRes };
+        }
+
+        public async Task<ApiResult<IEnumerable<EmployeeResponse>>> GetListWorkingTimes(string? keyword)
+        {
+            List<EmployeeResponse> queryAllWorkings = new List<EmployeeResponse>();
+
+            queryAllWorkings = await GetWorkingTimeSheets(null, keyword);
+
+            var startTime = new TimeSpan(1, 17, 0, 0);
+            var endTime = new TimeSpan(2, 02, 0, 0);
+
+            return new ApiSuccessResult<IEnumerable<EmployeeResponse>> { Message = Messages.Msg_Success, ResultObj = queryAllWorkings };
         }
 
         private async Task<List<EmployeeResponse>> GetWorkingTimeSheets(string? keyword)
@@ -199,5 +208,128 @@ namespace WCLWebAPI.Server.Repositories
 
             return query.OrderByDescending(x => x.TotalDay).ToList();
         }
+
+        private async Task<List<EmployeeResponse>> GetWorkingTimeSheets(int? employeeId, string? keyword, string group_type = "Yes")
+        {
+            IQueryable<Employee> queryEmployee = _context.Employees;
+            var query = new List<PayrollResponse>();
+
+            if ((employeeId != null && employeeId != 0 && employeeId != -1) || !string.IsNullOrEmpty(keyword))
+            {
+                queryEmployee = queryEmployee.Where(x => x.ID == employeeId || x.Name.Contains(keyword));
+            }
+
+            var isEmployee = queryEmployee.Any();
+
+            if (!isEmployee) return new List<EmployeeResponse>();
+            
+            switch (group_type)
+            {
+                case "Yes":
+                    query = await (from e in queryEmployee
+                                   join t in _context.TimeSheets on e.ID equals t.EmployeeID into group_join
+                                   from selector in group_join.DefaultIfEmpty()
+                                   join dp in _context.Departments on (selector != null) ? selector.Employee.DepartmentID : 0 equals dp.ID into group_join_dep
+                                   from result in group_join_dep.DefaultIfEmpty()
+                                   group selector by selector.EmployeeID into grouped
+                                   select new PayrollResponse
+                                   {
+                                       ID = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.ID,
+                                       Name = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Name,
+                                       CCCD = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.CCCD,
+                                       Phone = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Phone,
+                                       Email = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Email,
+                                       Address = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Address,
+                                       Gender = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Gender,
+                                       IsManager = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.IsManager,
+                                       Salary = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Salary,
+                                       DepartmentName = grouped.FirstOrDefault(x => x.Employee.ID == grouped.Key).Employee.Department.Name
+                                       //StartWorking = grouped.StartWorking,
+                                       //EndWorking = selector.EndWorking,
+                                       //BreakStart = selector.BreakStart,
+                                       //BreakEnd = selector.BreakEnd
+                                   }).ToListAsync();
+                    break;
+                default:
+                    query = await (from e in queryEmployee
+                                   join t in _context.TimeSheets on e.ID equals t.EmployeeID into group_join
+                                   from selector in group_join.DefaultIfEmpty()
+                                   join dp in _context.Departments on (selector != null) ? selector.Employee.DepartmentID : 0 equals dp.ID into group_join_dep
+                                   from result in group_join_dep.DefaultIfEmpty()
+                                   
+                                   select new PayrollResponse
+                                   {
+                                       ID = e.ID,
+                                       Name = e.Name,
+                                       CCCD = e.CCCD,
+                                       Phone = e.Phone,
+                                       Email = e.Email,
+                                       Address = e.Address,
+                                       Gender = e.Gender,
+                                       IsManager = e.IsManager,
+                                       Salary = e.Salary,
+                                       DepartmentName = result.Name,
+                                       StartWorking = selector.StartWorking,
+                                       EndWorking = selector.EndWorking,
+                                       BreakStart = selector.BreakStart,
+                                       BreakEnd = selector.BreakEnd
+                                   }).ToListAsync();
+                    break;
+            }
+           
+            var resMap = _mapper.Map<List<PayrollResponse>, List<EmployeeResponse>>(query);
+
+            resMap.ForEach(e =>
+            {
+                e.TotalWorkingHour = Math.Round(e.TotalDay.TotalHours, 2);
+            });
+
+            if (!resMap.Any()) return new List<EmployeeResponse>();
+
+            return resMap;
+        }
+
+        
+
+        public async Task<ApiResult<EmployeeResponse>> EmployeePayroll(int? id)
+        {
+            List<EmployeeResponse> queryAllWorkings = new List<EmployeeResponse>();
+
+            queryAllWorkings = await GetWorkingTimeSheets(id, null);
+
+            var groupRes = (from qw in queryAllWorkings
+                            group qw by qw.ID into grouped
+                            select new EmployeeWorkingResponse
+                            {
+                                ID = grouped.Key,
+                                Name = grouped.FirstOrDefault(x => x.ID == grouped.Key).Name,
+                                DOB = grouped.FirstOrDefault(x => x.ID == grouped.Key).DOB,
+                                CCCD = grouped.FirstOrDefault(x => x.ID == grouped.Key).CCCD,
+                                Address = grouped.FirstOrDefault(x => x.ID == grouped.Key).Address,
+                                Gender = grouped.FirstOrDefault(x => x.ID == grouped.Key).Gender,
+                                IsManager = grouped.FirstOrDefault(x => x.ID == grouped.Key).IsManager,
+                                DepartmentID = grouped.FirstOrDefault(x => x.ID == grouped.Key).DepartmentID,
+                                StartWorking = grouped.FirstOrDefault(x => x.ID == grouped.Key).StartWorking,
+                                EndWorking = grouped.FirstOrDefault(x => x.ID == grouped.Key).EndWorking,
+                                BreakStart = grouped.FirstOrDefault(x => x.ID == grouped.Key).BreakStart,
+                                BreakEnd = grouped.FirstOrDefault(x => x.ID == grouped.Key).BreakEnd,
+                                TotalTime = grouped.Aggregate(new TimeSpan(0), (ts, er) => ts.Add(er.TotalDay))
+                            }).ToList();
+
+            //parse to totalHours
+            groupRes.ForEach(e => {
+                e.TotalWorkingHour = Math.Round(e.TotalTime.TotalHours, 2);
+            });
+
+            var mapRes = _mapper.Map<List<EmployeeWorkingResponse>, List<EmployeeResponse>>(groupRes).FirstOrDefault();
+
+            return new ApiSuccessResult<EmployeeResponse> { Message = Messages.Msg_Success, ResultObj = mapRes };
+        }
+
+        private bool IsValid(int? id)
+        {
+            return false;
+        }
+
     }
 }

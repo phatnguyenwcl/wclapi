@@ -13,5 +13,7 @@ namespace WCLWebAPI.Server.Interfaces
         Task<ApiResult<bool>> DeleteEmployeeAsync(int id);
         Task<ApiResult<bool>> CheckEmployeeAsync(int id);
         Task<ApiResult<IEnumerable<EmployeeResponse>>> GetHighestWorkingHours(string? keyword);
+        Task<ApiResult<IEnumerable<EmployeeResponse>>> GetListWorkingTimes(string? keyword);
+        Task<ApiResult<EmployeeResponse>> EmployeePayroll(int? id);
     }
 }

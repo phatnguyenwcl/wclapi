@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WCLWebAPI.Server.EF;
 
@@ -11,9 +12,11 @@ using WCLWebAPI.Server.EF;
 namespace WCLWebAPI.Server.Migrations
 {
     [DbContext(typeof(WCLManagementDbContext))]
-    partial class WCLManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230130032947_update-column")]
+    partial class updatecolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

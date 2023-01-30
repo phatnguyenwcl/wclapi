@@ -40,6 +40,8 @@ namespace WCLWebAPI.Server.Entities
         [ForeignKey("DepartmentID")]
         public virtual Department Department { get; set; }
 
+        public decimal Salary { get; set; }
+
         public Guid UserId { get; set; }
 
         public bool IsManager { get; set; }
